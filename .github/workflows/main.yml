@@ -55,6 +55,13 @@ jobs:
               run: |
                 docker compose -f docker-compose.yml up -d --build
 
+            - name: Debug MongoDB
+              if: failure()
+              run: |
+                 docker compose ps
+                 docker compose logs mongodb
+                 docker inspect fitzone-mongodb --format '{{json .State.Health}}'
+
             - name: Test containers
               run: |
                 docker compose -f docker-compose.yml exec -T app go test ./...
