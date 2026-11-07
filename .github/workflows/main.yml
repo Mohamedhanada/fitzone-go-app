@@ -38,7 +38,7 @@ jobs:
          
             
             - name: build go app
-              run: go build -v ./...
+              run: go build -o fitzone-app main.go .
 
 
 
