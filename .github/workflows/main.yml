@@ -37,10 +37,6 @@ jobs:
                 JWT_SECRET: ${JWT_SECRET:-change-this-secret-to-a-random-value-at-least-32-chars}  
          
             
-            - name: build go app
-              run: go build -o fitzone-app main.go .
-
-
 
     docker-test:
         runs-on: [ubuntu-latest]
