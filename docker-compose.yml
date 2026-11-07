@@ -1,0 +1,37 @@
+services:
+  mongodb:
+    image: mongo:8
+    container_name: fitzone-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: fitzone
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    image: fitzone-app:latest
+    container_name: fitzone-app
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017
+      MONGODB_DATABASE: fitzone
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-to-a-random-value-at-least-32-chars}
+    volumes:
+      - uploaded_images:/app/static/uploads
+    ports:
+      - "4000:4000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+volumes:
+  uploaded_images:
+  mongodb_data:
